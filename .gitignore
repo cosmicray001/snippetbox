@@ -22,3 +22,5 @@ go.work
 
 #jetbrains
 .idea
+
+tmp/
