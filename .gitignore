@@ -22,3 +22,8 @@ go.work
 
 #jetbrains
 .idea
+
+tmp/
+
+# macOS related
+.DS_Store

@@ -1,22 +1,44 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
-	mux := http.NewServeMux()
-
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", FileListenerDisable(fileServer)))
-
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
-	log.Println("Starting server on :8000")
-	err := http.ListenAndServe(":8000", mux)
+	addr := flag.String("addr", ":8000", "HTTP network address")
+	flag.Parse()
+	infoLogFile, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
 		log.Fatal(err)
+	}
+	defer infoLogFile.Close()
+	infoLog := log.New(infoLogFile, "INFO\t", log.Ldate|log.Ltime)
+	errorLogFile, err := os.OpenFile("./tmp/error.log", os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer errorLogFile.Close()
+	errorLog := log.New(errorLogFile, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  app.routers(),
+	}
+	infoLog.Printf("Starting server on : %s\n", *addr)
+	err = srv.ListenAndServe()
+	if err != nil {
+		errorLog.Fatal(err)
 	}
 }
