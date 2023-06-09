@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +17,12 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":8000", "HTTP network address")
-	dsn := flag.String("dsn", os.Getenv("DB_URL"), "MySQL data source name")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	dbUrl := os.Getenv("DB_URL")
+	dsn := flag.String("dsn", dbUrl, "MySQL data source name")
 	flag.Parse()
 	infoLogFile, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
