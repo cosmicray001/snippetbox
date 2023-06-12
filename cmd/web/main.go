@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"github.com/cosmicray001/snippetbox/internal/models"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"log"
@@ -13,6 +14,7 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -46,6 +48,9 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		snippets: &models.SnippetModel{
+			DB: db,
+		},
 	}
 	srv := &http.Server{
 		Addr:     *addr,
