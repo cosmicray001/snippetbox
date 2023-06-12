@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"github.com/cosmicray001/snippetbox/internal/models"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -35,8 +37,16 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
-	msg := fmt.Sprintf("Display a specific snippet with ID %d...", snippetID)
-	_, _ = w.Write([]byte(msg))
+	snippet, err := app.snippets.Get(snippetID)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+	fmt.Fprintf(w, "%+v", snippet)
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
