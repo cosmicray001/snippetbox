@@ -6,7 +6,6 @@ import (
 	"github.com/cosmicray001/snippetbox/internal/models"
 	"github.com/go-playground/form/v4"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -23,10 +22,10 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":8000", "HTTP network address")
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	//err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatal("Error loading .env file")
+	//}
 	dbUrl := os.Getenv("DB_URL")
 	dsn := flag.String("dsn", dbUrl, "MySQL data source name")
 	flag.Parse()
