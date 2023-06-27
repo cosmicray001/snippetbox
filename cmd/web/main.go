@@ -29,17 +29,17 @@ func main() {
 	dbUrl := os.Getenv("DB_URL")
 	dsn := flag.String("dsn", dbUrl, "MySQL data source name")
 	flag.Parse()
-	infoLogFile, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer infoLogFile.Close()
+	//infoLogFile, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//defer infoLogFile.Close()
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	errorLogFile, err := os.OpenFile("./tmp/error.log", os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer errorLogFile.Close()
+	//errorLogFile, err := os.OpenFile("./tmp/error.log", os.O_RDWR|os.O_CREATE, 0666)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//defer errorLogFile.Close()
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	db, err := openDB(*dsn)
