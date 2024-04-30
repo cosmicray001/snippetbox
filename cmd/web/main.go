@@ -18,6 +18,7 @@ import (
 )
 
 type application struct {
+	debug          bool
 	errorLog       *log.Logger
 	infoLog        *log.Logger
 	snippets       models.SnippetModelInterface
@@ -35,6 +36,7 @@ func main() {
 	}
 	dbUrl := os.Getenv("DB_URL")
 	dsn := flag.String("dsn", dbUrl, "MySQL data source name")
+	debug := flag.Bool("debug", false, "Enable debug mode")
 	flag.Parse()
 	infoLogFile, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
@@ -66,6 +68,7 @@ func main() {
 	sessionManager.Lifetime = 12 * time.Hour
 	sessionManager.Cookie.Secure = true
 	app := &application{
+		debug:    *debug,
 		errorLog: errorLog,
 		infoLog:  infoLog,
 		snippets: &models.SnippetModel{
